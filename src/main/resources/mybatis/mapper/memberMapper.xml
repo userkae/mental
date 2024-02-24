@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sp.app.mapper.MemberMapper">
+	<select id="findById" parameterType="String" resultType="com.sp.app.domain.Member">
+		/* mamberMapper_findById 해당 아이디와 관련된 모든 정보 가져오기 */
+		SELECT userId, nickName, userPwd, email, enabled, regDate, updateMDate, memberIdx, membership
+		FROM member
+		WHERE userId = #{userId}
+	</select>
+	
+	<select id="findByMembership" parameterType="long" resultType="integer">
+		/* mamberMapper_findByMembership 회원와 관리자 회원권한 분리 */
+		SELECT membership
+		FROM member
+		WHERE memberIdx = #{memberIdx}
+	</select>
+	
+	<insert id="insertMember" parameterType="com.sp.app.domain.Member">
+		/* memberMapper_insertMember 회원가입 등록 */
+		INSERT INTO member(userId, nickName, userPwd, email, enabled, membership)
+			VALUES (#{userId}, #{nickName}, #{userPwd}, #{email}, 1, 1)
+	</insert>
+	
+	<select id="maxMemberIdx" resultType="long">
+		/* memberMapper_maxmemberIdx 최근 memberIdx 증가값 가져오기 */
+		SELECT MAX(memberIdx) FROM member
+	</select>
+	
+	<insert id="insertmManage" parameterType="com.sp.app.domain.Member">
+		/* memberMapper_insertmManage 회원관리 등록 */
+		INSERT INTO mManage(stateCode, memberIdx)
+			VALUES (0, #{memberIdx})
+	</insert>
+	
+	<select id="findByInfo" parameterType="long" resultType="com.sp.app.domain.Member">
+		/* memberMapper_findByInfo 회원 정보수정 관련 데이터 가져오기 */
+		SELECT userId, userPwd, nickName, email, memberIdx, updateMDate
+		FROM MEMBER
+		WHERE memberIdx = #{memberIdx}
+	</select>
+	
+	<update id="updateInfo" parameterType="com.sp.app.domain.Member">
+		/* memberMapper_updateInfo 회원 정보수정 */
+		UPDATE MEMBER
+		SET userPwd=#{userPwd}, nickName=#{nickName}, email=#{email}, updateMDate=CURRENT_TIMESTAMP
+		WHERE memberIdx = #{memberIdx}
+	</update>
+</mapper>

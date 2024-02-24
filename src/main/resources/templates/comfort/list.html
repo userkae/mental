@@ -1,0 +1,130 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout3}">
+<head>
+
+<meta charset="UTF-8">
+<link rel="stylesheet" th:href="@{/dist/css/paginate.css}" type="text/css">
+<style type="text/css">
+@font-face {
+	font-family: 'SUITE-Regular';
+	src:
+		url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-2@1.0/SUITE-Regular.woff2')
+		format('woff2');
+	font-weight: 400;
+	font-style: normal;
+}
+@font-face {
+    font-family: 'KCCChassam';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2302@1.0/KCCChassam.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+.comfortManageBox {
+	width: 900px;
+	height: 1800px;
+	margin-left: 25px;
+}
+.comfortManageSubject {
+	font-family: 'SUITE-Regular';
+	font-size: 25px;
+	font-weight: bold;
+	margin-top: 10px;
+	margin-bottom: 20px;
+	padding: 8px;
+	text-align: center;
+	width: 16%;
+	border-radius: 15px;
+	background-color: #FCFFB4;
+	float: left;
+}
+.comfortButton{
+	font-family: 'SUITE-Regular';
+	font-size: 15px;
+	font-weight: 300;
+	width: 75px;
+	height: 35px;
+	background-color: #FCF0B8;
+	border: 1px solid #DED4A6;
+	border-radius: 9px;
+	position: absolute;
+	top: 145px;
+	margin-left: 680px;
+}
+.comfortButton:hover{
+	font-weight: 600;
+	background-color: #f5e69f;
+	border: 1px solid #d6ca8d;
+}
+.oneComfort{
+	margin-left: 25px;
+	width: 850px;
+	height: auto;
+	position: relative;	/* 이미지 위에 텍스트 적용하기 위해 위치 조정 */
+}
+.imageContainer {
+    position: relative;
+    width: 100%;
+    height: 300px;
+    overflow: hidden;
+    margin-bottom: 10px;
+}
+
+.imageContainer img {
+    width: 100%;
+    display: block;
+    object-fit: scale-down;
+    object-position: center center;
+}
+
+.textOverlay {
+    position: absolute; 
+    top: 50%;
+    left: 50%; 
+    transform: translate(-50%, -50%);
+    text-align: center;
+    font-style: oblique;
+    color: white;
+    font-family: 'KCCChassam', sans-serif;
+    font-size: 28px;
+    padding: 10px;
+    border-radius: 8px;
+    pointer-events: none; 
+    z-index: 1;
+    height: auto;
+    white-space: pre-line;
+}
+
+</style>
+
+</head>
+
+<th:block layout:fragment="content">
+	<div class="comfortManageBox">
+		<div class="comfortManageSubject">위로 한스푼</div>
+		
+		<hr style="border: 1px solid #EDEDED; margin-top: 15px; width: 100%; margin-bottom: 20px;">
+		
+		<th:block th:each="dto, status : ${list}">
+				<div class="oneComfort" style="margin-bottom: 20px;">
+					<div class="imageContainer">
+						<th:block th:if="${dto.fileName != null}">
+							<img th:if="${dto.fileName != null}" th:src="@{'/uploads/comfortManage/' + ${dto.fileName}}" class="imgStyle2" alt="...">
+						</th:block>
+						<th:block th:unless="${dto.fileName != null}">
+							<img th:src="@{/dist/images/tree2.jpg}" class="imgStyle" alt="...">
+						</th:block>
+						<div class="textOverlay" th:text="${dto.cContent}"></div>
+					</div>
+				</div>
+		</th:block>
+		
+		<div class="page-navigation">
+			<th:block th:if="${dataCount != 0}">
+				[(${paging})]
+			</th:block>
+		</div>
+		
+	</div>
+</th:block>
+</html>

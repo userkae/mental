@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html xmlns:th="http//www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/layout3}">
+	
+<th:block layout:fragment="content">	
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<script type="text/javascript">
+function ajaxFun(url, method, formData, dataType, fn, file = false) {
+	console.log(formData);
+	const settings = {
+			type: method, 
+			data: formData,
+			success:function(data) {
+				fn(data);
+			},
+			beforeSend: function(jqXHR) {
+				jqXHR.setRequestHeader('AJAX', true);
+			},
+			complete: function () {
+			},
+			error: function(jqXHR) {
+				if(jqXHR.status === 403) {
+					login();
+					return false;
+				} else if(jqXHR.status === 400) {
+					alert('요청 처리가 실패 했습니다.');
+					return false;
+		    	}
+		    	
+				console.log(jqXHR.responseText);
+			}
+	};
+	
+	if(file) {
+		settings.processData = false;  // file 전송시 필수. 서버로전송할 데이터를 쿼리문자열로 변환여부
+		settings.contentType = false;  // file 전송시 필수. 서버에전송할 데이터의 Content-Type. 기본:application/x-www-urlencoded
+	}
+	
+	$.ajax(url, settings);
+}
+
+function memberOk() {
+	const f = document.memberForm;
+	let str;
+	
+	str = f.userId.value;
+	if( !/^[a-z][a-z0-9_]{4,9}$/i.test(str) ) { 
+		alert("아이디를 다시 입력 하세요. ");
+		f.userId.focus();
+		return;
+	}
+
+	let mode = "${mode}";
+	if(mode === "signup" && f.userIdValid.value === "false") {
+		str = "아이디 중복 검사가 실행되지 않았습니다.";
+		$("#userId").parent().find(".help-block").html(str);
+		f.userId.focus();
+		return;
+	}
+	
+	str = f.userPwd.value;
+	if( !/^(?=.*[a-z])(?=.*[!@#$%^*+=-]|.*[0-9]).{5,10}$/i.test(str) ) { 
+		alert("패스워드를 다시 입력 하세요. ");
+		f.userPwd.focus();
+		return;
+	}
+
+	if( str !== f.userPwd2.value ) {
+        alert("패스워드가 일치하지 않습니다. ");
+        f.userPwd.focus();
+        return;
+	}
+	
+    str = f.nickName.value;
+    if( !str ) {
+        alert("닉네임을 다시 입력하세요. ");
+        f.userName.focus();
+        return;
+    }
+    
+    str = f.email1.value.trim();
+    if( !str ) {
+        alert("이메일을 입력하세요. ");
+        f.email1.focus();
+        return;
+    }
+
+    str = f.email2.value.trim();
+    if( !str ) {
+        alert("이메일을 입력하세요. ");
+        f.email2.focus();
+        return;
+    }
+    
+    f.action = "[[@{/member/{mode}(mode=${mode})}]]";
+    f.submit();
+	
+}
+function changeEmail() {
+    const f = document.memberForm;
+	    
+    let str = f.selectEmail.value;
+    if(str !== "direct") {
+        f.email2.value = str; 
+        f.email2.readOnly = true;
+        f.email1.focus(); 
+    }
+    else {
+        f.email2.value = "";
+        f.email2.readOnly = false;
+        f.email1.focus();
+    }
+}
+
+function userIdCheck() {
+    // 아이디 중복 검사
+    let userId = $('#userId').val();
+
+    if (!/^[a-z][a-z0-9_]{4,9}$/i.test(userId)) {
+        let str = ' - 아이디는 5~10자 이내이며, 첫글자는 영문자로 시작해야 합니다.';
+        $('#userId').focus();
+        $('.userId-box').find('.help-block').css("color", "red");
+        $('.userId-box').find('.help-block').html(str);
+        return;
+    }
+
+    // 컨텍스트 경로 가져오기
+    let contextPath = getContextPath();
+
+    let url = contextPath + "/member/userIdCheck";
+    let query = {userId: userId};
+
+    // AJAX-JSON
+    const fn = function (data) {
+        let passed = data.passed;
+
+        if (passed === 'true') {
+            let str = '<span style="color:blue; font-weight: bold;">' + userId + '</span> 아이디는 사용가능 합니다.';
+            $('.userId-box').find('.help-block').html(str);
+            $('#userIdValid').val('true');
+        } else {
+            let str = '<span style="color:red; font-weight: bold;">' + userId + '</span> 아이디는 사용할수 없습니다.';
+            $('.userId-box').find('.help-block').html(str);
+            $('#userId').val('');
+            $('#userIdValid').val('false');
+            $('#userId').focus();
+        }
+    };
+
+    ajaxFun(url, "post", query, "json", fn);
+}
+
+// 컨텍스트 경로를 반환하는 함수
+function getContextPath() {
+    // 현재 페이지의 URL
+    let currentPageUrl = window.location.href;
+    // 컨텍스트 경로가 포함되어 있는 부분
+    let contextPathIndex = currentPageUrl.indexOf("/member/");
+    // 컨텍스트 경로
+    let contextPath = currentPageUrl.substring(0, contextPathIndex);
+    return contextPath;
+}
+
+</script>
+<head>
+<body class="p-3 m-0 border-0 bd-example m-0 border-0">
+  <div class="body-container">
+            <div class="input-form-backgroud row">
+                <div class="input-form col-md-12 mx-auto" style="width: 600px; height: 330px; border: 1px solid #C2C2C2; margin-top: 30px; border-radius: 30px;">                                    
+                
+                    <div class="bodyTitle">
+                        <h3 class="text-center">
+                        	<span th:if="${mode=='signup'}" style="margin-left: 10px;">회원가입</span>
+                        	<span th:if="${mode=='update'}" style="margin-left: 10px;">정보수정</span>
+                        </h3>
+                    </div>
+                
+                        <form name="memberForm" method="post" style="margin-left: 10px;">
+							<div class="row mb-3">
+								<label class="col-sm-2 col-form-label" for="userId" style="float: left; margin-top: 5px;"><span class="text-danger" style="color: red;">*</span>&nbsp;아이디</label>
+								<div class="col-sm-10 userId-box">
+									<div class="row">
+										<div class="col-5 pe-1">
+											<span th:if="${mode=='signup'}" style="float: left; margin-right: 10px;">
+												<input style="margin-left: 10px;"  type="text" name="userId" id="userId" class="form-control radi" placeholder="아이디" th:value="${dto.userId}">
+											</span>
+											<span th:if="${mode=='update'}">
+												<input style="margin-left: 10px;" type="text" name="userId" id="userId" class="form-control radi" placeholder="아이디" readonly="readonly" th:value="${dto.userId}">
+											</span>
+										</div>
+										<div class="col-3 ps-1">
+											<span th:if="${mode=='signup'}">
+												<button type="button" class="btn btn-light" onclick="userIdCheck();">아이디중복검사</button>
+											</span>
+										</div>
+										<div>
+											<div class="mt-1 help-block" style="font-size:13px; color:#a0a0a0; margin-top: 3px; margin-bottom: 5px;"> - 아이디는 5~10자 이내이며, 첫글자는 영문자로 시작해야 합니다.</div>
+										</div>
+									</div>
+								</div>
+							</div>
+                         
+                            <div class="row mb-3">
+                                <label class="col-sm-2 col-form-label" for="userPwd" style="margin-top: 5px; margin-right: 10px; float: left;"><span class="text-danger" style="color: red;">*</span>&nbsp;패스워드</label>
+                                <div class="col-sm-10">
+                                    <input type="password" name="userPwd" id="userPwd" class="form-control radi" autocomplete="off" placeholder="패스워드" th:value="${dto.userPwd}">
+                                </div>
+                                <div class="mt-1 help-block" style="font-size:13px; color:#a0a0a0; margin-top: 3px; margin-bottom: 5px;"> - 패스워드는 5~10자이며 하나 이상의 숫자나 특수문자가 포함되어야 합니다.</div>
+                            </div>
+                            
+                            <div class="row mb-3">
+                                <label class="col-sm-2 col-form-label" for="userPwd2" style="margin-top: 5px; margin-right: 10px; float: left;"><span class="text-danger" style="color: red;">*</span>&nbsp;패스워드 확인</label>
+                                <div class="col-sm-10">
+                                    <input type="password" name="userPwd2" id="userPwd2" class="form-control radi" autocomplete="off" placeholder="패스워드 확인" th:value="${dto.userPwd}">
+                                </div>
+                            </div>
+                         
+                            <div class="row mb-3" style="margin-top: 10px;">
+                                <label class="col-sm-2 col-form-label" for="nickName" style="margin-top: 5px; margin-right: 10px; float: left;"><span class="text-danger" style="color: red;">*</span>&nbsp;닉네임</label>
+                                <div class="col-sm-10">
+                                    <input type="text" name="nickName" id="nickName" class="form-control radi" value="${dto.nickName}" maxlength="10" placeholder="닉네임" th:value="${dto.nickName}">
+                                </div>
+                            </div>
+                        
+                            <div class="row mb-3" style="margin-top: 10px;">
+                                <label class="col-sm-2 col-form-label" for="selectEmail" style="margin-top: 5px; margin-right: 10px; float: left;"><span class="text-danger" style="color: red;">*</span>&nbsp;이메일</label>
+                                <div class="col-sm-10 row">
+                                    <div class="col input-group">
+                                        <input type="text" name="email1" class="form-control radi" maxlength="30" th:value="${dto.email1}" style="border-radius: 20px; float: left; padding-left: 10px;">
+                                        <span class="input-group-text p-1" style="border: none; background: none; float: left; margin-top: 5px; margin-left: 3px; margin-right: 3px;">@</span>
+                                        <input type="text" name="email2" class="form-control radi" maxlength="30" th:value="${dto.email2}"  style="border-radius: 20px; float: left; margin-right: 10px; padding-left: 10px;" readonly>
+                                    </div>		
+                                    
+                                    <div class="col-3 pe-0">
+                                        <select name="selectEmail" id="selectEmail" class="form-select radi" onchange="changeEmail();">
+                                            <option value="">선 택</option>
+                                            <option value="naver.com" th:selected="${dto.email2 == 'naver.com'}">naver</option>
+                                            <option value="gmail.com" th:selected="${dto.email2 == 'gmail.com'}">gmail</option>
+                                            <option value="hanmail.net" th:selected="${dto.email2 == 'hanmail.net'}">hanmail</option>
+                                            <option value="hotmail.com" th:selected="${dto.email2 == 'hotmail.com'}">hotmail</option>
+                                            <option value="direct">직접입력</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row" style="margin-top: 50px;">
+                                <div class="text-center">
+                                	<span th:if="${mode =='signup'}">
+	                                    <button type="button" name="sendButton" class="signUpButton btn-outline-success" onclick="memberOk();">회원가입</button>
+	                                    &nbsp;&nbsp;&nbsp;&nbsp;
+                                    </span>
+                                    <span th:if="${mode =='update'}">
+	                                    <button type="button" name="sendButton" class="signUpButton btn-outline-success" onclick="memberOk();">정보수정</button>
+	                                    &nbsp;&nbsp;&nbsp;&nbsp;
+                                    </span>
+                                    
+                                    <span th:if="${mode =='signup'}">
+                                    	<button type="button" class="signUpButton btn-outline-danger" th:onclick="|location.href='@{/main}'|">가입취소</button>
+                                    </span>
+                                    <span th:if="${mode =='update'}">
+                                    	<button type="button" class="signUpButton btn-outline-danger" th:onclick="|location.href='@{/main}'|">수정취소</button>
+                                    </span>
+                                    <input type="hidden" name="userIdValid" id="userIdValid" value="false">
+                                </div>
+                            </div>
+                    
+                        </form>
+            
+                    </div>
+                </div>
+            </div>
+</body>
+</html>

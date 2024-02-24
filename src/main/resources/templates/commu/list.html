@@ -1,0 +1,139 @@
+<html xmlns:th="http//www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout3}">
+      
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" th:href="@{/dist/css/paginate.css}" type="text/css">
+</head>
+
+<!-- layout3.html의 layout:fragment="css" 영역에 들어감  -->
+<th:block layout:fragment="css">
+<style type="text/css">
+@font-face {
+    font-family: 'SUITE-Regular';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-2@1.0/SUITE-Regular.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+}
+.body-main {
+	max-width: 800px;
+}
+.commuSubject{
+	font-family: 'SUITE-Regular';
+	font-size: 25px;
+	font-weight: bold;
+	margin-top: 10px;
+	margin-bottom: 20px;
+	padding: 8px;
+	text-align: center;
+	width: 13%;
+	border-radius: 15px;
+	background-color: #FCFFB4;
+	float: left;
+}
+.commuList{
+	width: 100%;
+	text-align: center;
+}
+.commuHead{
+	font-family: 'SUITE-Regular';
+	font-size: 17px;
+	font-weight: bold;
+	background-color: #EBEBEB;
+}
+.commuContent{
+	font-family: 'SUITE-Regular';
+	font-size: 16px;
+}
+.commuHeadPadding{
+	padding: 5px;
+}
+.commuButton{
+	font-family: 'SUITE-Regular';
+	font-size: 15px;
+	font-weight: 300;
+	width: 75px;
+	height: 35px;
+	background-color: #FCF0B8;
+	border: 1px solid #DED4A6;
+	border-radius: 9px;
+	position: absolute;
+	top: 145px;
+	margin-left: 705px;
+}
+.commuButton:hover {
+	font-weight: 600;
+	background-color: #f5e69f;
+	border: 1px solid #d6ca8d;
+}
+.commuContentOverflow {
+    font-family: 'SUITE-Regular';
+    font-size: 16px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 400px; /* 생략 부분의 너비를 조절해주세요 */
+}
+.commuList {
+    width: 100%;
+    text-align: center;
+    table-layout: fixed; /* 테이블의 너비를 고정시킴 */
+}
+.commuList th,
+.commuList td {
+    padding: 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis; /* 텍스트가 너무 길면 생략 부호로 처리 */
+}
+.commuList .col-5 {
+    width: 30%; /* 제목 셀의 너비를 설정 */
+}
+
+</style>
+</th:block>
+
+<th:block layout:fragment="content">
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+<div class="diaryBox" style="margin-left: 100px;">
+	<div class="subjectSize">
+		<div class="commuSubject">커뮤니티</div>
+	</div>
+	<div>
+		<button type="button" class="commuButton" th:onclick="|location.href='@{/commu/write}'|">등록하기</button>
+	</div>
+	
+	<table class="commuList" style="border: 1px solid #EBEBEB; border-collapse: collapse;">
+		<thead>
+			<tr class="commuHead">
+				<th class="col-1 commuHeadPadding">번호</th>
+				<th class="col-2 commuHeadPadding">닉네임</th>
+				<th class="col-5 commuHeadPadding">제목</th>
+				<th class="col-2 commuHeadPadding">등록일</th>
+				<th class="col-1 commuHeadPadding">조회수</th>
+			</tr>
+		</thead>
+		
+		<tbody class="commuContent">
+			<th:block th:each="dto, status : ${list}">
+				<tr>
+					<td class="col-1" style="padding: 5px;" th:text="${list.size() - status.index}"></td>
+					<td class="col-2" style="padding: 5px;">[(${dto.nickName})]</td>
+					<td class="col-5" style="width: 400px; padding: 5px;">
+						<a class="commuContentOverflow" style="color: black;" th:href="@{/commu/article/{commuNum}(commuNum=${dto.commuNum}, page=${page})}" th:text="${dto.commuSubject}"></a>
+					</td>
+					
+					<td class="col-2" style="padding: 5px;">[(${dto.commuRegDate})]</td>
+					<td class="col-1" style="padding: 5px;">[(${dto.hitCount})]</td>
+				</tr>
+			</th:block>
+		</tbody>
+	</table>
+	
+	<div class="page-navigation">
+		<th:block th:if="${dataCount != 0}">
+			[(${paging})]
+		</th:block>
+	</div>
+</div>
+</th:block>

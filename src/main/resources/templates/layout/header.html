@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+    <div th:fragment="header">
+		<div class="header-top">
+			<h1 class="logo"><a th:href="@{/main}">온빛</a></h1>
+			<div class="textColor">
+				<th:block th:if="${session.member == null}">
+					<a th:href="@{/member/login}">로그인</a>
+						&nbsp;&nbsp;
+					<a th:href="@{/member/signup}">회원가입</a>
+				</th:block>
+				<th:block th:if="${session.member != null}">
+					<span style="color:blue; font-family: 'SUITE-Regular'; font-size: 15px;">[[${session.member.nickName}]]</span><span style="font-family: 'SUITE-Regular'; font-size: 15px;">님</span>
+						&nbsp;&nbsp;
+					<a th:href="@{/member/logout}">로그아웃</a>
+						&nbsp;&nbsp;
+					<a th:href="@{/member/update}">정보수정</a>
+						&nbsp;&nbsp;
+					<th:block th:if="${session.member.membership == 99}">
+						<a th:href="@{/memberManage/list}" class="adminA">관리자 페이지</a>
+					</th:block>
+				</th:block>
+			</div>
+		</div>
+		
+		<div class="menu">
+			<nav>
+				<span></span>
+				<!-- 소개가 메인으로 쓰일거임. main에 소개 만들고 밑에 있는 소개 없애버리기 -->
+				<span><a th:href="@{/main}">소개</a></span>
+				<span><a th:href="@{/diary/list}">비밀 일기장</a></span>
+				<span><a th:href="@{/commu/list}">커뮤니티</a></span>
+				<span><a th:href="@{/comfort/list}">위로 한스푼</a></span>
+			</nav>
+		</div>
+    </div>
+</html>

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{admin/main}">
+<head>
+<meta charset="UTF-8">
+<!-- 스타일시트 경로를 올바르게 수정 -->
+<link rel="stylesheet" th:href="@{/dist/css/paginate.css}" type="text/css">
+<style type="text/css">
+@font-face {
+	font-family: 'SUITE-Regular';
+	src:
+		url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-2@1.0/SUITE-Regular.woff2')
+		format('woff2');
+	font-weight: 400;
+	font-style: normal;
+}
+
+.memberManageBox {
+	width: 900px;
+	height: 500px;
+	margin-left: 25px;
+}
+.subjectSize {
+	width: 100%;
+	height: 11.5%;
+}
+.memberManageSubject {
+	font-family: 'SUITE-Regular';
+	font-size: 25px;
+	font-weight: bold;
+	margin-top: 10px;
+	margin-bottom: 20px;
+	padding: 8px;
+	text-align: center;
+	width: 11%;
+	border-radius: 15px;
+	background-color: #FCFFB4;
+	float: left;
+}
+.memberManageList {
+	width: 100%;
+	text-align: center;
+}
+.memberManageHead {
+	font-family: 'SUITE-Regular';
+	font-size: 17px;
+	font-weight: bold;
+	background-color: #EBEBEB;
+}
+.memberManageHeadPadding {
+	padding: 5px;
+}
+.memberManageContent {
+	font-family: 'SUITE-Regular';
+	font-size: 16px;
+}
+</style>
+</head>
+
+<!-- layout3.html의 layout:fragment="content" 영역에 들어감 -->
+<th:block layout:fragment="content">
+	<div class="memberManageBox">
+		<div class="subjectSize">
+			<div class="memberManageSubject">회원관리</div>
+		</div>
+
+		<table class="memberManageList"
+			style="border: 1px solid #EBEBEB; border-collapse: collapse;">
+			<thead>
+				<tr class="memberManageHead">
+					<th class="col-1 memberManageHeadPadding">아이디</th>
+					<th class="col-2 memberManageHeadPadding">닉네임</th>
+					<th class="col-5 memberManageHeadPadding">가입일자</th>
+					<th class="col-2 memberManageHeadPadding">회원권한</th>
+					<th class="col-1 memberManageHeadPadding">상태코드</th>
+				</tr>
+			</thead>
+
+			<tbody class="memberManageContent">
+				<th:block th:each="dto, status: ${list}">
+						<tr>
+							<td style="padding: 5px;">[(${dto.userId})]</td>
+							<td style="padding: 5px;">[(${dto.nickName})]</td>
+							<td style="padding: 5px;">
+								<a style="text-decoration: none; color: black;" th:href="@{/memberManage/update/{memberIdx}(memberIdx=${dto.memberIdx}, page=${page})}" th:text="${dto.regDate}"></a>
+							</td>
+							<td th:text="${dto.membership == 1 ? '회원' : '관리자'}" style="padding: 5px;"></td>
+							<td style="padding: 5px;">[(${dto.memo})]</td>
+						</tr>
+					<input type="hidden" name="memberIdx" th:value="${dto.memberIdx}" >
+					<input type="hidden" name="stateCode" th:value="${dto.stateCode}" >
+				</th:block>
+			</tbody>
+		</table>
+
+		<div class="page-navigation">
+			<th:block th:if="${dataCount != 0}">
+				[(${paging})]
+			</th:block>
+		</div>
+
+	</div>
+</th:block>
+</html>

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sp.app.mapper.CommuMapper">
+	
+	<select id="commuList" parameterType="map" resultType="com.sp.app.domain.Commu">
+		/* commuMapper_commuList 커뮤니티 리스트 */
+		SELECT commuNum
+			   , commuSubject
+			   , commuContent
+			   , hitCount
+			   , TO_CHAR(commuRegDate, 'YYYY-MM-DD') AS commuRegDate
+			   , c.memberIdx
+			   , nickName
+		FROM community c
+		JOIN member m ON m.memberIdx = c.memberIdx
+		ORDER BY commuNum DESC
+		OFFSET #{offset} ROWS FETCH FIRST #{size} ROWS ONLY
+	</select>
+	
+	<select id="dataCount" parameterType="map" resultType="Integer">
+		/* commyMapper_dataCount 커뮤니티 개수 */
+		SELECT NVL(COUNT(*), 0)
+		FROM community
+	</select>
+	
+	<select id="articleCommu" parameterType="long" resultType="com.sp.app.domain.Commu">
+		/* commuMapper_articleCommu 특정 커뮤니티 상세 보기 */
+		SELECT commuNum
+			   , commuSubject
+			   , commuContent
+			   , hitCount
+			   , TO_CHAR(commuRegDate, 'YYYY-MM-DD') AS commuRegDate
+			   , c.memberIdx
+			   , nickName
+		FROM community c
+		JOIN member m ON m.memberIdx = c.memberIdx
+		WHERE commuNum = #{commuNum}
+	</select>
+	
+	<insert id="insertCommu" parameterType="com.sp.app.domain.Commu">
+		/* commuMapper_insertCommu 커뮤니티 등록 */
+		INSERT INTO community (commuSubject, commuContent, memberIdx)
+			VALUES (#{commuSubject}, #{commuContent}, #{memberIdx})
+	</insert>
+	
+	<update id="updateCommu" parameterType="com.sp.app.domain.Commu">
+		/* commuMapper_updateCommu 커뮤니티 수정 */
+		UPDATE community
+		SET commuSubject=#{commuSubject}, commuContent=#{commuContent}
+		WHERE commuNum=#{commuNum}
+	</update>
+	
+	<delete id="deleteCommu" parameterType="long">
+		/* commuMapper_deleteCommu 커뮤니티 삭제 */
+		DELETE FROM community
+		WHERE commuNum = #{commuNum}
+	</delete>
+	
+	<update id="updateHitCount" parameterType="long">
+		/* commuMapper_updateHitCount 조회수 수정 */
+		UPDATE community 
+		SET hitCount = hitCount + 1
+		WHERE commuNum = #{commuNum}
+	</update>
+	
+	<insert id="insertReply" parameterType="com.sp.app.domain.CommuReply">
+		/* commuMapper_insertReply 댓글 등록 */
+		INSERT INTO commuReply(reContent, commuNum, memberIdx)
+			VALUES (#{reContent}, #{commuNum}, #{memberIdx})
+	</insert>
+	
+	<select id="maxReplyNum" resultType="long">
+		/* commuMapper_maxReplyNum 최근 replyNum 증가값 가져오기 */
+		SELECT MAX(replyNum) FROM commuReply
+	</select>
+	
+	<select id="selectReply" parameterType="long" resultType="com.sp.app.domain.CommuReply">
+		/* commuMapper_selectReply 새로 단 댓글 찾기 */
+		SELECT replyNum, reContent, reRegDate, commuNum, cr.memberIdx, nickName
+		FROM commuReply cr
+		JOIN member m ON m.memberIdx = cr.memberIdx
+		WHERE replyNum = #{replyNum}
+	</select>
+	
+	<select id="commuReplyList" parameterType="long" resultType="com.sp.app.domain.CommuReply">
+		/* commuMapper_commuReplyList 댓글 리스트 */
+		SELECT replyNum, reContent, reRegDate, commuNum, cr.memberIdx, nickName
+		FROM commuReply cr
+		JOIN member m ON m.memberIdx = cr.memberIdx
+		WHERE commuNum = #{commuNum}
+	</select>
+	
+	<delete id="deleteReply" parameterType="long">
+		/* commuMapper_deleteReply 댓글 삭제 */
+		DELETE FROM commuReply
+		WHERE replyNum = #{replyNum}
+	</delete>
+</mapper>

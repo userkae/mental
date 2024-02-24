@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout3}">
+      
+<th:block layout:fragment="content">
+<script type="text/javascript">
+function sendOk() {
+    const f = document.commuForm;
+
+    let str = f.commuSubject.value;
+    if(!str) {
+        alert("제목을 입력하세요. ");
+        f.commuSubject.focus();
+        return;
+    }
+
+    str = f.commuContent.value;
+    if(!str) {
+        alert("내용을 입력하세요. ");
+        f.commuContent.focus();
+        return;
+    }
+
+    f.action = "[[@{/commu/{mode}(mode=${mode}, page=${page})}]]";
+    f.submit();
+}
+</script>
+<style type="text/css">
+@font-face {
+    font-family: 'SUITE-Regular';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-2@1.0/SUITE-Regular.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+}
+.body-main {
+	width: 900px;
+	height: 500px;
+	margin-left: 105px;
+}
+.commuWriteSubject{
+	font-family: 'SUITE-Regular';
+	font-size: 25px;
+	font-weight: bold;
+	margin-top: 10px;
+	padding: 8px;
+	text-align: center;
+	width: 23%;
+	border-radius: 15px;
+	background-color: #FCFFB4;
+	float: left;
+}
+.subjectSize{
+	width: 100%;
+	height: 11.5%;
+}
+.commuWriteStyle{
+	margin-top: 15px;
+	font-family: 'SUITE-Regular';
+	font-size: 18px;
+}
+</style>
+
+<div class="diaryBox">
+		<div class="subjectSize">
+			<div class="commuWriteSubject" th:text="${mode=='write' ? '커뮤니티 등록하기' : '커뮤니티 수정하기'}"></div>
+		</div>
+			
+		<div class="writeMent">
+			<div>당신의 감정을 털어내거나 공유하고 싶나요?</div>
+			<div style="margin-bottom: 20px;">커뮤니티를 활용해 마음의 불을 밝혀보세요😊</div>
+		</div>
+		
+		
+		<form name="commuForm" method="post" class="commuWriteStyle" enctype="multipart/form-data">
+			<div>
+				<div>제목 : 
+					<input type="text" name="commuSubject" id="commuSubject" class="radi subjectStyle" placeholder="제목" th:value="${dto.commuSubject}">
+				</div>
+				
+				<div>
+					<div style="float: left;">내용 : </div>
+						<textarea name="commuContent" class="radi contentStyle" placeholder="내용" th:text="${dto.commuContent}"></textarea>
+				</div>
+				
+			</div>
+			<table class="table">
+					<tr> 
+						<td align="center">
+							<button type="button" class="btn" onclick="sendOk();" th:text="${mode=='write' ? '등록완료' : '수정완료'}"></button>
+							<button type="reset" class="btn">다시입력</button>
+							<button type="button" class="btn" th:onclick="|location.href='@{/commu/list}'|" th:text="${mode=='write' ? '등록취소' : '수정취소'}"></button>
+							<th:block th:if="${mode=='update'}">
+								<input type="hidden" name="commuNum" th:value="${dto.commuNum}">
+							</th:block>
+						</td>
+					</tr>
+				</table>
+		</form>
+	</div>
+</th:block>
+</html>

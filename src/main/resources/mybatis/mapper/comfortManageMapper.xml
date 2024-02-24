@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sp.app.mapper.ComfortManageMapper">
+
+	<select id="dataCount" parameterType="map" resultType="Integer">
+		/* comfortManageMapper_dataCount 위로 한스푼 총 개수 */
+		SELECT NVL(COUNT(*), 0)
+		FROM comfort
+	</select>
+	
+	<select id="comfortList" parameterType="map" resultType="com.sp.app.domain.ComfortManage">
+		/* comfortManageMapper_comfortList 위로 한스푼 총 개수 */
+		SELECT comfortNum
+			   , cContent
+			   , TO_CHAR(cRegDate, 'YYYY-MM-DD') AS cRegDate
+			   , fileName
+			   , memberIdx
+		FROM comfort
+		ORDER BY comfortNum DESC
+		OFFSET #{offset} ROWS FETCH FIRST #{size} ROWS ONLY
+	</select>
+	
+	<select id="insertComfort" parameterType="com.sp.app.domain.ComfortManage">
+		/* comfortManageMapper_insertComfort 위로 한스푼 등록 */
+		INSERT INTO comfort(cContent, fileName, memberIdx)
+			VALUES (#{cContent}, #{fileName, jdbcType=VARCHAR}, #{memberIdx})
+	</select>
+	
+	<select id="articleComfort" parameterType="long" resultType="com.sp.app.domain.ComfortManage">
+		/* comfortManageMapper_articleComfort 특정 위로 한스푼 정보 */
+		SELECT comfortNum
+			   , cContent
+			   , TO_CHAR(cRegDate, 'YYYY-MM-DD') AS cRegDate
+			   , fileName
+			   , memberIdx
+		FROM comfort
+		WHERE comfortNum = #{comfortNum}
+	</select>
+	
+	<update id="updateComfort" parameterType="com.sp.app.domain.ComfortManage">
+		/* comfortManageMapper_updateComfort 특정 위로 한스푼 수정 */
+		UPDATE comfort
+		SET cContent = #{cContent}, fileName = #{fileName, jdbcType=VARCHAR}, memberIdx = #{memberIdx}
+		WHERE comfortNum = #{comfortNum}
+	</update>
+	
+	<delete id="deleteComfort" parameterType="long">
+		/* comfortManageMapper_deleteComfort 특정 위로 한스푼 삭제 */
+		DELETE FROM comfort
+		WHERE comfortNum = #{comfortNum}
+	</delete>
+</mapper>

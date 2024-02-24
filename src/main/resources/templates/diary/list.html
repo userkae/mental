@@ -1,0 +1,62 @@
+<html xmlns:th="http//www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout3}">
+      
+<head>
+  <meta charset="UTF-8">
+  <!-- 부트스트랩 CDN 추가 -->
+  <link rel="stylesheet" th:href="@{/dist/css/paginate.css}" type="text/css">
+</head>
+      
+<!-- layout3.html의 layout:fragment="css" 영역에 들어감  -->
+<th:block layout:fragment="css">
+	<style type="text/css">
+		.body-main {
+			max-width: 800px;
+		}
+	</style>
+</th:block>
+	
+<!-- layout3.html의 layout:fragment="content" 영역에 들어감  -->
+<th:block layout:fragment="content">
+	<div class="diaryBox">
+		<div class="subjectSize">
+			<div class="diarySubject">비밀 일기장</div>
+			<div>
+				<button type="button" class="diaryButton" th:onclick="|location.href='@{/diary/write}'|">등록하기</button>
+			</div>
+		</div>
+		
+		<hr style="border: 1px solid #EDEDED; margin-top: 15px;">
+		
+		<th:block th:each="dto, status : ${list}">
+			<div class="card cardStyle" style="width: 28%; margin-top: 10px; float: left; margin-right: 30px; margin-left: 18px; border-radius: 9px;">
+		  		<a class="listAStyle" th:href="@{/diary/article/{diaryNum}(diaryNum=${dto.diaryNum}, page=${page})}">
+		  		<th:block th:if="${dto.fileName != null}">
+				    <img th:if="${dto.fileName != null}" th:src="@{'/uploads/diary/' + ${dto.fileName}}" class="card-img-top" style="width: 100%; height: 50%; border-top-left-radius: 9px; border-top-right-radius: 9px; object-fit: cover;" alt="...">
+				</th:block>
+				<th:block th:unless="${dto.fileName != null}">
+				    <img th:src="@{/dist/images/diary_general.png}" class="card-img-top" style="width: 100%; height: 50%; border-top-left-radius: 9px; border-top-right-radius: 9px; object-fit: cover;" alt="...">
+				</th:block>
+		  		<div class="card-body" style="margin-left: 8px; margin-right: 5px; padding: 0px;">
+		    		<div class="card-text listSubject" th:text="${dto.dSubject}"></div>
+		    		<div class="card-text listContent" th:text="${dto.dContent}"></div>
+		    		<div class="card-text listRegDate" th:text="${dto.dRegDate}"></div>
+			  	</div>
+			  	</a>
+			</div>
+			
+			<th:block th:unless="${dataCount != 0}">
+               	<div class="mainEmpty"></div>
+	        </th:block>
+		</th:block>
+		
+		<div class="page-navigation">
+			<th:block th:if="${dataCount != 0}">
+				[(${paging})]
+			</th:block>
+		</div>
+    </div>
+</th:block>
+
+</html>

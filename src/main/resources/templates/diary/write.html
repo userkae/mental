@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout3}">
+      
+<th:block layout:fragment="content">
+<script type="text/javascript">
+function sendOk() {
+    const f = document.diaryForm;
+
+    let str = f.dSubject.value;
+    if(!str) {
+        alert("제목을 입력하세요. ");
+        f.dSubject.focus();
+        return;
+    }
+
+    str = f.dContent.value;
+    if(!str) {
+        alert("내용을 입력하세요. ");
+        f.dContent.focus();
+        return;
+    }
+
+    f.action = "[[@{/diary/{mode}(mode=${mode}, page=${page})}]]";
+    f.submit();
+}
+</script>
+
+	<div class="diaryBox">
+		<div class="subjectSize">
+			<div class="diaryWriteSubject" th:text="${mode=='write' ? '일기 등록하기' : '일기 수정하기'}"></div>
+		</div>
+			
+		<div class="writeMent">
+			<div>오늘 하루는 어떠셨나요?</div>
+			<div style="margin-bottom: 20px;">당신의 하루를 작성해보세요.</div>
+		</div>
+		
+		
+		<form name="diaryForm" method="post" class="diaryWriteStyle" enctype="multipart/form-data">
+			<div>
+				<div>제목 : 
+					<input type="text" name="dSubject" id="dSubject" class="radi subjectStyle" placeholder="제목" th:value="${dto.dSubject}">
+				</div>
+				
+				<div>
+					<div style="float: left;">내용 : </div>
+						<textarea name="dContent" class="radi contentStyle" placeholder="내용" th:text="${dto.dContent}"></textarea>
+				</div>
+				
+				<div style="margin-top: 10px; margin-bottom: 5px;">이미지 :
+					<input type="file" name="selectFile" class="form-control" th:text="${dto.selectFile}">
+				</div>
+			</div>
+			<table class="table">
+				<tr> 
+					<td align="center">
+						<button type="button" class="btn" onclick="sendOk();" th:text="${mode=='write' ? '등록완료' : '수정완료'}"></button>
+						<button type="reset" class="btn">다시입력</button>
+						<button type="button" class="btn" th:onclick="|location.href='@{/diary/list}'|" th:text="${mode=='write' ? '등록취소' : '수정취소'}"></button>
+						<th:block th:if="${mode=='update'}">
+							<input type="hidden" name="fileName" th:value="${dto.FileName}">
+							<input type="hidden" name="diaryNum" th:value="${dto.diaryNum}">
+						</th:block>
+					</td>
+				</tr>
+			</table>
+		</form>
+	</div>
+</th:block>
+</html>

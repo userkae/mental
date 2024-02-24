@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout3}">
+      
+<th:block layout:fragment="content">
+<style type="text/css">
+@font-face {
+    font-family: 'SUITE-Regular';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-2@1.0/SUITE-Regular.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+}
+.body-main {
+	min-width: 800px;
+}
+.articleSubject{
+	height: 60px;
+	font-size: 30px;
+	font-weight: 600;
+	text-align: center;
+	font-family: 'SUITE-Regular';
+	padding-top: 10px;
+	border-bottom: 3px solid #525252;
+}
+.articleNickName{
+	font-family: 'SUITE-Regular';
+	font-size: 20px;
+}
+.articleContent{
+	font-family: 'SUITE-Regular';
+	font-size: 20px;
+	color: #2B2B2B;
+    word-break: break-all;
+}
+.articleHitCount{
+	font-family: 'SUITE-Regular';
+	font-size: 17px;
+	float: right;
+	margin-right: 5px;
+}
+
+.commuReplyBody{
+	margin-top: 20px;
+	height: 120px;
+	border: 1px solid #A6A6A6;
+	border-radius: 10px;
+	background-color: #F0F0F0;
+}
+.commuReplyBox{
+	font-family: 'SUITE-Regular';
+	margin: 5px 10px;
+}
+.replySubject{
+	font-size: 20px;
+	font-weight: 600;
+	color: #525252;
+}
+.replyContent{
+	margin-top: 10px;
+	font-size: 15px;
+	width: 775px;
+	height: 65px;
+	resize: none;
+	white-space: pre-line;
+}
+.profile{
+	width: 60px;
+	height: 60px;
+	border-radius: 50%;
+	margin: 30px 10px;
+	border: 1px solid #949494;
+	float: left;
+}
+.replyNickName{
+	font-family: 'SUITE-Regular';
+	font-size: 20px;
+	margin: 7px auto;
+}
+.replyDetail{
+	width: 700px;
+	height: 65px;
+	border: 1px solid #A6A6A6;
+	border-radius: 10px;
+	background-color: #EDEDED;
+	margin-left: 80px;
+}
+.replyDetailRegDate{
+	font-family: 'SUITE-Regular';
+	font-size: 15px;
+	color: #A6A6A6;
+}
+.replyDelete{
+	border: none;
+	background-color: white;
+	font-family: 'SUITE-Regular';
+	font-size: 15px;
+}
+.replyDelete:hover {
+	color: blue;
+	text-decoration: underline;
+}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- jQuery 라이브러리 불러오기 -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.1/font/bootstrap-icons.css">
+<script type="text/javascript">
+function deleteOk(){
+    if(confirm("게시글을 삭제하시겠습니까? ")) {
+        let url = '/commu/delete?commuNum=' + "[[${dto.commuNum}]]" + '&page=' + "[[${page}]]";
+        location.href = url;
+    };
+};
+
+$(function(){
+    $(".btn-commuReply").click(function(){
+        var reContent = $("#reContent").val(); // jQuery를 사용하여 값 가져오기
+        var commuNum = "[[${dto.commuNum}]]"; // 해당 게시물 번호 가져오기
+        var profile = "@{/dist/images/profile.png}";
+        
+        $.ajax({
+            url: "/commu/insertReply",
+            method: "POST",
+            data: { reContent: reContent, commuNum: commuNum, profile: profile }, // 데이터 객체로 전달
+            dataType: "json",
+            success: function(data) {
+                alert("댓글이 등록되었습니다.");
+                profile = $(".profile").attr("src");
+                // 댓글 등록 후 새로운 댓글을 화면에 추가
+                var newReply =
+                	'<div style="height: 120px; border: 1px solid #A6A6A6; border-radius: 10px; margin-top: 10px;">' +
+                    '<img class="profile" src="' + profile + '">' +
+                    '<div class="replyNickName">' + data.nickName + '<span class="replyDetailRegDate">(작성일: ' + data.reRegDate + ')</span>' +
+                    '<span th:hidden="${session.member.memberIdx != vo.memberIdx}">' +
+                        '<button type="button" class="replyDelete" style="float: right; margin-right: 20px;">삭제</button>' +
+                    '</span>' +
+                    '</div>' +
+                    '<div class="replyDetail"><span style="font-family: \'SUITE-Regular\'; font-size: 17px; margin-left: 5px; white-space: pre-line;">' + data.reContent + '</span></div>' +
+                    '<input type="hidden" name="replyNum" th:value="' + data.replyNum + '">' +
+                '</div>';
+                $(".replyList").append(newReply);
+                $("#reContent").val(''); // 댓글 등록 후 입력창 초기화
+            },
+            error: function(jqXHR) {
+                console.log("댓글 등록에 실패했습니다.");
+                console.log(jqXHR.responseText);
+            }
+        });
+    });
+});
+
+$(document).on("click", ".replyDelete", function(){
+    var commuNum = "[[${dto.commuNum}]]";
+    var replyNum = $(this).siblings('input[name="replyNum"]').val();
+    var page = "[[${page}]]";
+
+    var deleteButton = $(this);
+
+    $.ajax({
+        url: "/commu/replyDelete",
+        method: "POST",
+        data: { commuNum: commuNum, replyNum: replyNum, page: page },
+        dataType: "json",
+        success: function(data) {
+            if(data.state == "success"){
+                alert("댓글이 삭제되었습니다.");
+                deleteButton.closest('.oneList').remove(); // 수정된 부분: 댓글 삭제 성공 시 해당 요소를 삭제
+            }
+        },
+        error: function(jqXHR) {
+            alert("댓글 삭제에 실패했습니다.");
+            console.log(jqXHR.responseText);
+        }
+    });
+});
+
+
+
+</script>
+<div class="body-main" style="position: inherit; margin-top: 10px; margin-left: 80px;">
+	<div>
+		<div>
+			<div class="articleSubject">[(${dto.commuSubject})]</div>
+		</div>
+		
+		<div style="height: 35px; margin-top: 10px; border-bottom: 1px solid #A6A6A6;">
+			<span class="articleNickName" style="margin-left: 5px;">[(${dto.nickName})]</span>
+			<span class="articleRegDate" style="color: #A6A6A6;"> (작성일: [(${dto.commuRegDate})])</span>
+			<span class="articleHitCount">조회수: [(${dto.hitCount})]</span>
+		</div>
+		
+		<div style="margin-top: 40px;">
+			<div class="articleContent" style="margin-left: 5px;">[(${dto.commuContent})]</div>
+		</div>
+		
+		<input type="hidden" name="commuNum" th:value="${dto.commuNum}">
+	
+		<table class="table" style="margin-top: 40px; border-top: 1px solid #A6A6A6;">
+			<tr>
+				<td>
+					<button type="button" class="btn" th:hidden="${dto.memberIdx != infoMemberIdx}"
+						th:onclick="|location.href='@{/commu/update(commuNum=${commuNum}, page=${page})}'|">수정</button>
+					<button type="button" class="btn" th:hidden="${dto.memberIdx != infoMemberIdx}"
+						th:onclick="deleteOk()">삭제</button>
+				</td>
+				<td align="right">
+					<button type="button" class="btn"
+						th:onclick="|location.href='@{/commu/list(page=${page})}'|">리스트</button>
+				</td>
+			</tr>
+		</table>
+	</div>
+	
+	<div class="commuReplyBody">
+		<div class="commuReplyBox">
+			<form th:action="@{/reply/regist}" method="post" id="commentForm">
+				<div>
+					<div class="replySubject" style="float: left; margin-right: 630px;">댓글 작성</div>
+					<button type="button" class="btn btn-commuReply">등록하기</button>
+				</div>
+			
+			    <textarea th:name="reContent" id="reContent" class="replyContent"></textarea>
+			</form>
+		</div>
+	</div>
+	
+	<div class="replyList" style="margin-top: 30px; margin-bottom: 10px;">	
+		<th:block th:each="vo, status: ${list}" class="oneList">
+			<div style="height: 120px; border: 1px solid #A6A6A6; border-radius: 10px; margin-top: 10px;">
+				<img class="profile" th:src="@{/dist/images/profile.png}">
+				<div class="replyNickName">[(${vo.nickName})]<span class="replyDetailRegDate">(작성일: [(${vo.reRegDate})])</span>
+					<span th:hidden="${session.member.memberIdx != vo.memberIdx}">
+						<button type="button" class="replyDelete" style="float: right; margin-right: 20px;">삭제</button>
+						<input type="hidden" name="replyNum" th:value="${vo.replyNum}">
+					</span>
+				</div>
+				<div class="replyDetail"><span style="font-family: 'SUITE-Regular'; font-size: 17px; margin-left: 5px; white-space: pre-line;">[(${vo.reContent})]</span></div>
+			</div>
+		</th:block>
+	</div>
+</div>
+</th:block>
+</html>

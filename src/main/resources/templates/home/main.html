@@ -1,0 +1,196 @@
+<html xmlns:th="http//www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout3}">
+      
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" th:href="@{/dist/css/paginate.css}" type="text/css">
+</head>
+
+<!-- layout3.html의 layout:fragment="css" 영역에 들어감  -->
+<th:block layout:fragment="css">
+<style type="text/css">
+@font-face {
+	font-family: 'Cafe24Ssurround';
+	src:
+		url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2105_2@1.0/Cafe24Ssurround.woff')
+		format('woff');
+	font-weight: normal;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'SUITE-Regular';
+	src:
+		url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-2@1.0/SUITE-Regular.woff2')
+		format('woff2');
+	font-weight: 400;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'KCCChassam';
+	src:
+		url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2302@1.0/KCCChassam.woff2')
+		format('woff2');
+	font-weight: normal;
+	font-style: normal;
+}
+/* header */
+.header-top {
+	margin: 0px auto;
+	width: 960px;
+	height: 70px;
+	display: flex;
+	justify-content: space-between;
+	/* 시작 item은 시작점, 마지막 item은 끝점에 정렬되고 나머지 items는 사이에 고르게 정렬 */
+	align-items: center;
+}
+
+.header-top .logo {
+	font-size: 32px;
+	margin: 0;
+	margin-right: auto;
+	padding: 0;
+	line-height: 1;
+	font-weight: 600;
+	letter-spacing: 0.8px;
+	/*font-family: "Poppins", sans-serif;*/
+	font-family: 'Cafe24Ssurround';
+}
+
+.mainBox {
+	width: 900px;
+	height: 800px;
+	margin-left: 25px;
+}
+
+.subjectSize {
+	width: 100%;
+	height: 8%;
+	margin-bottom: 17px;
+}
+
+.mainSubject {
+	font-family: 'SUITE-Regular';
+	font-size: 25px;
+	font-weight: bold;
+	margin-top: 10px;
+	margin-bottom: 20px;
+	padding: 8px;
+	text-align: center;
+	width: 8%;
+	border-radius: 15px;
+	background-color: #FCFFB4;
+	float: left;
+}
+
+.logo {
+	font-size: 35px;
+	margin: 0;
+	margin-right: auto;
+	padding: 0;
+	line-height: 1;
+	font-weight: 600;
+	letter-spacing: 0.8px;
+	/*font-family: "Poppins", sans-serif;*/
+	font-family: 'Cafe24Ssurround';
+}
+
+.textAll {
+	font-family: 'SUITE-Regular';
+	font-size: 22px;
+	margin: 5px;
+}
+
+.mainSubject2 {
+	font-family: 'SUITE-Regular';
+	font-size: 25px;
+	font-weight: bold;
+	margin-top: 15px;
+	text-align: center;
+	width: 100%;
+	float: left;
+	text-align: left;
+	font-style: oblique;
+}
+
+.imgStyle {
+	width: 37%;
+	height: 20%;
+	border: 1px solid #A6A6A6;
+	border-top-left-radius: 9px;
+	border-top-right-radius: 9px;
+	border-bottom-left-radius: 9px;
+	border-bottom-right-radius: 9px;
+	object-fit: cover;
+}
+
+.textAll2 {
+	font-family: 'SUITE-Regular';
+	font-size: 20px;
+}
+
+.firstText {
+	font-family: 'KCCChassam';
+	font-size: 32px;
+	width: 60%;
+	height: 20%;
+	text-align: center;
+	background-color: #FCF0B8;
+	border-radius: 15px;
+}
+</style>
+</th:block>
+
+<th:block layout:fragment="content">
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+	<div class="mainBox" style="margin-left: 100px;">
+		<div class="subjectSize">
+			<div class="mainSubject">소개</div>
+		</div>
+		
+		<div class="firstText" style="margin-left: 200px; margin-bottom: 20px;">
+			<div style="padding-top: 33px;">
+				오늘 하루도 수고한 당신에게,<br>
+				온빛이 당신의 마음을 안아드리겠습니다.
+			</div>
+		</div>
+		
+		<div style="width: 100%;" class="textAll"><span class="logo">온빛</span>은 <span style="font-style: oblique; font-weight: 600;">"온기와 빛" </span>의 의미로</div>
+		<div class="textAll">지친 당신의 어두운 마음에 빛을 비춰주어, 새로운 희망과 기운을 주는 존재입니다.</div>
+		
+		<hr style="border: 1px solid #B8B8B8;">
+		
+		<div class="textAll">온빛은 비밀 일기장, 커뮤니티, 위로 한스푼으로 구성되어 있습니다.</div>
+		
+		<div class="mainSubject2">I. 비밀 일기장</div>
+			<div>
+				<img th:src="@{/dist/images/diary_list.png}" style="margin-top: 10px; float: left;" class="imgStyle" alt="...">
+			</div>
+			<div class="textAll2" style="width: 65%; height: 28%; margin-left: 350px; margin-top: 165px;">
+				비밀 일기장은 <span style="font-weight: bold;">나만의 안전한 공간</span>으로 누구에게도 털어놓지 못한 이야기를 <br>작성할 수 있습니다.
+				<br>오늘의 감정을 풀어내며, 내 안의 이야기를 담아보세요.
+			</div>
+			
+		<div class="mainSubject2">II. 커뮤니티</div>
+			<div>
+				<img th:src="@{/dist/images/commu_list.png}" style="margin-top: 10px; float: left;" class="imgStyle" alt="...">
+			</div>
+			<div class="textAll2" style="width: 65%; height: 15%; margin-left: 350px; margin-top: 100px;">
+				커뮤니티에서는 서로를 이해하고 위로해주는 소중한 공간입니다.<br>
+				<span style="font-weight: bold;">고민</span>이나 <span style="font-weight: bold;">말하고 싶은 이야기</span>가 있다면 커뮤니티를 활용해보세요.
+			</div>
+			
+		<div class="mainSubject2">III. 위로 한스푼</div>
+			<div>
+				<img th:src="@{/dist/images/comfort_list.png}" style="margin-top: 10px; float: left;" class="imgStyle" alt="...">
+			</div>
+			<div class="textAll2" style="width: 65%; height: 32%; margin-left: 350px; margin-top: 250px;">
+				위로 한스푼은 공감과 힘이 되는 <span style="font-weight: bold;">글귀</span> 모음이 있는 곳입니다.<br>
+				온빛의 작은 위로로 당신의 하루를 따뜻하게 밝혀드리겠습니다.
+			</div>
+	</div>
+</th:block>
+
+</html>

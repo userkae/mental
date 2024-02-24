@@ -1,0 +1,173 @@
+<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+<style>
+@font-face {
+    font-family: 'omyu_pretty';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-01@1.0/omyu_pretty.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Cafe24Ssurround';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2105_2@1.0/Cafe24Ssurround.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'SUITE-Regular';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-2@1.0/SUITE-Regular.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+}
+body{
+	width: 100%;
+	height: 100%;
+	padding: 0;
+	margin: 0;
+	background-color: black;
+}
+.thirdStyle{
+	
+	animation-fill-mode: none;
+}
+@keyframes blink-effect {
+  50% {
+    opacity: 0;
+  }
+}
+/* 조명 뚜껑 */
+.trapezoid {
+	  height: 0%;
+	  width: 20%;
+	  border-bottom: 150px solid #9088D4;
+	  border-left: 125px solid transparent;
+	  border-right: 125px solid transparent;
+	  position: relative;
+	  top: 0%;
+	  left: 35%;
+}
+/* 조명 깜빡임 */
+.blink {
+	  animation-delay: 1s;
+	  animation: blink-effect 1s step-end;
+	  animation-iteration-count : 2;
+	  animation-fill-mode: forwards;
+	  width: 10%; 
+   	  height: 13%; 
+      border-radius: 0 0 150px 150px;
+	  background-color: #F7DB69;
+	  position: absolute;
+	  top: 16.5%;
+	  left: 47%;
+  /*
+  animation-name: blink-effect;
+  animation-duration: 1s;
+  animation-iteration-count:infinite;
+  animation-timing-function:step-end;
+  */
+}
+.turnOn{
+	animation: blink-effect 1s step-end;
+}
+/* 조명 빛 */
+.fadeInAnimation {
+    animation: fadeInAnimation ease 1s;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
+    height: 0;
+	width: 32%;
+	border-bottom: 760px solid #fcf7e6;
+	border-left: 500px solid transparent;
+	border-right: 500px solid transparent;
+	position: absolute;
+	top: 16.5%;
+	left: 9.5%;
+}
+
+@keyframes fadeInAnimation {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+@keyframes fadeInUp {
+    0% {
+        opacity: 0;
+        transform: translate3d(0, 100%, 0);
+    }
+    to {
+        opacity: 1;
+        transform: translateZ(0);
+    }
+}
+.finalAnimation{
+	animation: 1s 500ms ease-out;
+}
+
+.firstText{
+	animation: fadeInUp 2s;
+	text-align: center;
+	position: absolute;
+	top: 47%;
+	left: 28%;
+	color: black;
+	font-family: 'omyu_pretty';
+	font-size: 50px;
+	animation-delay: 3s;
+	animation-fill-mode: backwards;
+}
+.secondText{
+	animation: fadeInUp 2s;
+	text-align: center;
+	position: absolute;
+	top: 57%;
+	left: 28%;
+	color: black;
+	font-family: 'omyu_pretty';
+	font-size: 50px;
+	animation-delay: 3s;
+	animation-fill-mode: backwards;
+}
+.finalButton{
+	width: 200px;
+	height: 50px;
+	font-family: 'SUITE-Regular';
+	font-size: 20px;
+	background-color: #f5e69f;
+	border: 1px solid #d6ca8d;
+	
+	animation: fadeInUp 2s;
+	animation-delay: 6s;
+	animation-fill-mode: backwards;
+}
+.finalButton:hover {
+	font-weight: bold;
+}
+</style>
+
+<html xmlns:th="http//www.thymeleaf.org">
+<link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+<body>
+	<div class="totalSize thirdStyle">
+		<div class="trapezoid"></div>
+	<div class="fadeInAnimation"></div>
+	</div>
+	<div class="totalSize thirdStyle">
+		<div class="blink"></div>	
+	</div>
+	
+	<div class=finalAnimation>
+		<div class="firstText">&nbsp;작은 빛이 모여 세상을 비추듯,</div>
+		<div class="secondText">"온빛"이 여러분의 마음 속 따뜻한 빛이 되어드리겠습니다.</div>
+	</div>
+	
+	<div>
+		<button type="button" class="finalButton" th:onclick="|location.href='@{/member/login}'|" style="position: absolute; top: 70%; left: 40%;">로그인</button>
+		<button type="button" class="finalButton" th:onclick="|location.href='@{/member/signup}'|" style="position: absolute; top: 70%; left: 52%;">회원가입</button>
+	</div>
+	
+</body>
+</html>

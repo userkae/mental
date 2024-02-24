@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{admin/main}">
+<head>
+
+<meta charset="UTF-8">
+<link rel="stylesheet" th:href="@{/dist/css/paginate.css}" type="text/css">
+<style type="text/css">
+@font-face {
+	font-family: 'SUITE-Regular';
+	src:
+		url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-2@1.0/SUITE-Regular.woff2')
+		format('woff2');
+	font-weight: 400;
+	font-style: normal;
+}
+@font-face {
+    font-family: 'KCCChassam';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2302@1.0/KCCChassam.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+.comfortBox{
+	width: 900px;
+	height: 500px;
+	margin-left: 25px;
+}
+.comfortWriteSubject{
+	font-family: 'SUITE-Regular';
+	font-size: 25px;
+	font-weight: bold;
+	margin: 10px 0px;
+	padding: 8px;
+	text-align: center;
+	width: 14%;
+	border-radius: 15px;
+	background-color: #FCFFB4;
+}
+.subjectSize{
+	width: 100%;
+}
+.comfortWriteStyle{
+	margin-top: 15px;
+	font-family: 'SUITE-Regular';
+	font-size: 18px;
+}
+.contentStyle{
+	width: 810px;
+	height: 230px;
+	margin-left: 4px;
+	resize: none;
+	white-space: pre-line;
+}
+.btn {
+	border: 1px solid #DED4A6;
+	background-color: #FCF0B8;
+	padding: 5px 10px;
+	border-radius: 9px;
+	font-weight: 300;
+	cursor: pointer;
+	font-size: 15px;
+	/*font-family: "맑은 고딕", 나눔고딕, 돋움, sans-serif;*/
+	font-family: 'SUITE-Regular';
+	vertical-align: baseline;
+}
+.btn:hover{
+	font-weight: 600;
+	background-color: #f5e69f;
+	border: 1px solid #d6ca8d;
+}
+.fileStyle{
+	padding: 5px;
+	border: 1px solid #A6A6A6;
+	border-radius: 5px;
+}
+</style>
+<script type="text/javascript">
+function sendOk() {
+    const f = document.comfortForm;
+
+    str = f.cContent.value;
+    if(!str) {
+        alert("내용을 입력하세요. ");
+        f.cContent.focus();
+        return;
+    }
+
+    f.action = "[[@{/comfortManage/{mode}(mode=${mode}, page=${page})}]]";
+    f.submit();
+}
+</script>
+</head>
+<th:block layout:fragment="content">
+	<div class="comfortBox">
+		<div class="subjectSize">
+			<div class="comfortWriteSubject" th:text="${mode=='write' ? '위로 한스푼 등록하기' : '위로 한스푼 수정하기'}"></div>
+		</div>
+		
+		<form name="comfortForm" method="post" class="comfortWriteStyle" enctype="multipart/form-data">
+			<div>
+				<div>
+					<div style="margin-left: 5px; float: left;">내용 : </div>
+						<textarea name="cContent" class="radi contentStyle" placeholder="내용" th:text="${dto.cContent}"></textarea>
+				</div>
+				
+				<div style="margin-top: 10px; margin-bottom: 15px;">이미지 :
+					<input type="file" name="selectFile" class="fileStyle" th:text="${dto.selectFile}">
+				</div>
+			</div>
+			
+			<table class="table" style="margin-left: 330px;">
+				<tr> 
+					<td align="center">
+						<button type="button" class="btn" onclick="sendOk();" th:text="${mode=='write' ? '등록완료' : '수정완료'}"></button>
+						<button type="reset" class="btn">다시입력</button>
+						<button type="button" class="btn" th:onclick="|location.href='@{/comfortManage/list}'|" th:text="${mode=='write' ? '등록취소' : '수정취소'}"></button>
+						<th:block th:if="${mode=='update'}">
+							<input type="hidden" name="fileName" th:value="${dto.fileName}">
+							<input type="hidden" name="comfortNum" th:value="${dto.comfortNum}">
+						</th:block>
+					</td>
+				</tr>
+			</table>
+		</form>		
+	</div>
+</th:block>
+</html>

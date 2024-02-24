@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sp.app.mapper.DiaryMapper">
+
+	<insert id="insertDiary" parameterType="com.sp.app.domain.Diary">
+		/* diaryMapper_insertDiary 일기 등록 */
+		INSERT INTO diary(dSubject, dContent, memberIdx, fileName)
+			VALUES (#{dSubject}, #{dContent}, #{memberIdx}, #{fileName})
+	</insert>
+
+	<select id="selectDiaryNum" resultType="long">
+		/* diaryMapper_selectDiaryNum 최근 diaryNum 증가값 가져오기 */
+		SELECT MAX(diaryNum) FROM diary
+	</select>
+	
+	<select id="dataCount" parameterType="map" resultType="Integer">
+		/* diaryMapper_dataCount 일기 총 개수 */
+		SELECT NVL(COUNT(*), 0)
+		FROM diary
+	</select>
+	
+	<select id="listDiary" parameterType="map" resultType="com.sp.app.domain.Diary">
+		/* diaryMapper_listDiary 일기 전체 리스트 */
+		SELECT diaryNum
+		     , dSubject
+		     , dContent
+		     , TO_CHAR(dRegDate, 'YYYY-MM-DD') dRegDate
+		     , dUpdateDate
+		     , memberIdx
+		     , fileName
+		FROM diary
+		WHERE memberIdx = #{memberIdx}
+		ORDER BY diaryNum DESC
+		OFFSET #{offset} ROWS FETCH FIRST #{size} ROWS ONLY
+	</select>
+	
+	<select id="articleDiary" parameterType="long" resultType="com.sp.app.domain.Diary">
+		/* diaryMapper_articleDiary 일기 보기 자세히 보기 */
+		SELECT diaryNum
+		     , dSubject
+		     , dContent
+		     , TO_CHAR(dRegDate, 'YYYY-MM-DD') dRegDate
+		     , dUpdateDate
+		     , memberIdx
+		     , fileName
+		FROM diary
+		WHERE diaryNum = #{diaryNum}
+	</select>
+	
+	<update id="updateDiary" parameterType="com.sp.app.domain.Diary">
+		/* diaryMapper_updateDiary 일기 수정하기 */
+		UPDATE diary
+		SET dSubject = #{dSubject}, dContent = #{dContent}, fileName = #{fileName}
+		WHERE diaryNum = #{diaryNum}
+	</update>
+	
+	<delete id="deleteDiary" parameterType="Long">
+		/* diaryMapper_deleteDiary 일기 삭제하기 */
+		DELETE FROM diary
+		WHERE diaryNum = #{diaryNum}
+	</delete>
+
+</mapper>

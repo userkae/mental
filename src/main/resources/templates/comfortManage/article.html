@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{admin/main}">
+<head>
+
+<meta charset="UTF-8">
+<link rel="stylesheet" th:href="@{/dist/css/paginate.css}" type="text/css">
+<style type="text/css">
+@font-face {
+	font-family: 'SUITE-Regular';
+	src:
+		url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-2@1.0/SUITE-Regular.woff2')
+		format('woff2');
+	font-weight: 400;
+	font-style: normal;
+}
+@font-face {
+    font-family: 'KCCChassam';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2302@1.0/KCCChassam.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+.comfortBox{
+	width: 900px;
+	margin-left: 25px;
+}
+.comfortWriteSubject{
+	font-family: 'SUITE-Regular';
+	font-size: 25px;
+	font-weight: bold;
+	margin: 10px 0px;
+	padding: 8px;
+	text-align: center;
+	width: 14%;
+	border-radius: 15px;
+	background-color: #FCFFB4;
+}
+.subjectSize{
+	width: 100%;
+}
+.confortText1{
+	font-family: 'SUITE-Regular';
+	font-size: 20px;
+	font-weight: 500;
+}
+.confortText2{
+	font-family: 'SUITE-Regular';
+	font-size: 15px;
+	color: #525252;
+}
+.oneComfort{
+	margin-left: 25px;
+	width: 850px;
+	height: auto;
+	position: relative;	/* 이미지 위에 텍스트 적용하기 위해 위치 조정 */
+}
+.imageContainer {
+    position: relative;
+    width: 100%;
+    height: 300px;
+    overflow: hidden;
+    margin-bottom: 10px;
+}
+.imageContainer img {
+    width: 100%;
+    display: block;
+    object-fit: scale-down;
+    object-position: center center;
+}
+.textOverlay {
+    position: absolute; 
+    top: 50%;
+    left: 50%; 
+    transform: translate(-50%, -50%);
+    text-align: center;
+    font-style: oblique;
+    color: white;
+    font-family: 'KCCChassam', sans-serif;
+    font-size: 28px;
+    padding: 10px;
+    border-radius: 8px;
+    pointer-events: none; 
+    z-index: 1;
+    height: auto;
+    white-space: pre-line;
+}
+.btn {
+	border: 1px solid #DED4A6;
+	background-color: #FCF0B8;
+	padding: 5px 10px;
+	border-radius: 9px;
+	font-weight: 300;
+	cursor: pointer;
+	font-size: 15px;
+	/*font-family: "맑은 고딕", 나눔고딕, 돋움, sans-serif;*/
+	font-family: 'SUITE-Regular';
+	vertical-align: baseline;
+}
+.btn:hover{
+	font-weight: 600;
+	background-color: #f5e69f;
+	border: 1px solid #d6ca8d;
+}
+</style>
+<script type="text/javascript">
+function deleteOk(){
+    if(confirm("게시글을 삭제하시겠습니까? ")) {
+        let url = '/comfortManage/delete?comfortNum=' + "[[${dto.comfortNum}]]" + '&page=' + "[[${page}]]" + '&fileName=' + "[[${dto.fileName}]]";
+        location.href = url;
+    };
+};
+</script>
+</head>
+<th:block layout:fragment="content">
+	<div class="comfortBox">
+		<div class="subjectSize">
+			<div class="comfortWriteSubject">위로 한스푼 상세보기</div>
+		</div>
+	
+		<div style="width: 850px; margin-left: 25px; margin-bottom: 10px; text-align: center;">
+			<span class="confortText1">작성자 : [[${session.member.nickName}]]</span>
+			<span class="confortText2">(등록일 : [(${dto.cRegDate})])</span>
+		</div>
+	
+		<hr style="width: 850px; border: 1px solid; margin-bottom: 15px;">
+	
+		<div class="oneComfort" style="margin-bottom: 20px;">
+			<div class="imageContainer">
+				<th:block th:if="${dto.fileName != null}">
+					<img th:if="${dto.fileName != null}" th:src="@{'/uploads/comfortManage/' + ${dto.fileName}}" class="imgStyle2" alt="...">
+				</th:block>
+				<th:block th:unless="${dto.fileName != null}">
+					<img th:src="@{/dist/images/tree2.jpg}" class="imgStyle" alt="...">
+				</th:block>
+				<div class="textOverlay" th:text="${dto.cContent}"></div>
+			</div>
+		</div>
+		<th:block th:if="${dto.fileName != null}">
+		    <input type="hidden" name="fileName" th:value="${dto.fileName}">
+		</th:block>
+		<th:block th:unless="${dto.fileName != null}">
+		    <input type="hidden" name="fileName" th:value="${null}">
+		</th:block>
+		<input type="hidden" name="comfortNum" th:value="${dto.comfortNum}">
+	</div>
+	
+	<table class="table" style="float: right;">
+		<tr>
+			<td style="padding-left: 80px;">
+				<button type="button" class="btn"
+					th:onclick="|location.href='@{/comfortManage/update(comfortNum=${comfortNum}, page=${page})}'|">수정</button>
+				<button type="button" class="btn"
+					th:onclick="deleteOk()">삭제</button>
+			</td>
+			<td align="right" style="padding-right: 80px;">
+				<button type="button" class="btn"
+					th:onclick="|location.href='@{/comfortManage/list(page=${page})}'|">리스트</button>
+			</td>
+		</tr>
+	</table>
+</th:block>
+
+</html>
